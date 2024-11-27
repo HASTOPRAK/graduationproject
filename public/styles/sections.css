@@ -1,0 +1,35 @@
+body {
+    background: linear-gradient(270deg, #027508, #09c9a9, #0cf32b);
+    background-size: 600% 600%;
+    animation: gradientMove 10s ease infinite;
+  }
+  
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  #stepSections{
+    display: flex;
+    flex-direction: row;
+    background-color: #027508;
+  }
+
+  .sections div{
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-end;
+  }
+
+  .came{
+    background-color: red;
+  }
+
+  .saw{
+    background-color: white;
+  }
+
+  .conquered{
+    background-color: blue;
+  }

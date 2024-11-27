@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BODY</title>
+    <link rel="stylesheet" href="./public/styles/sections.css" />
+    <link
+      rel="shortcut icon"
+      href="./public/images/FitmindFitbody.png"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <div id="fitBody">
+      <div id="choosenStep">
+        <h3>Your daily steps to take</h3>
+        <ul>
+          <li>
+            <input type="checkbox" name="Walk30" id="Walk30" /> Walk for 30
+            minutes
+          </li>
+          <li>
+            <input type="checkbox" name="Run10" id="Run10" /> Run for 10 minutes
+          </li>
+          <li>
+            <input type="checkbox" name="GymU" id="GymU" /> Usual weight
+            training
+          </li>
+        </ul>
+        <input type="submit" value="Done!" />
+      </div>
+
+      <div id="bodySteps">
+        <h3>Choose steps to take</h3>
+        <div id="stepSections">
+          <ul class="sections">
+            <li>
+              <div id="came" class="came section">
+                <h4>Came</h4>
+                <ul>
+                  <li>
+                    Walk for 15 minutes <input type="button" value="Add" />
+                  </li>
+                  <li>
+                    Run for 10 minutes <input type="button" value="Add" />
+                  </li>
+                  <li>
+                    Light weight training <input type="button" value="Add" />
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <div id="saw" class="saw section">
+                <h4>Saw</h4>
+                <ul>
+                  <li>
+                    Walk for 30 minutes <input type="button" value="Add" />
+                  </li>
+                  <li>
+                    Run for 30 minutes <input type="button" value="Add" />
+                  </li>
+                  <li>
+                    Usual weight training <input type="button" value="Add" />
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <div id="conquered" class="conquered section">
+                <h4>Conquered</h4>
+                <ul>
+                  <li>
+                    Walk for 60 minutes <input type="button" value="Add" />
+                  </li>
+                  <li>
+                    Run for 45 minutes <input type="button" value="Add" />
+                  </li>
+                  <li>
+                    Hard weight training <input type="button" value="Add" />
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div id="bodyCounter" class="fitCounter">
+        <h3>Your Progress</h3>
+        <h4>Today's growth</h4>
+        <p>You have 450 xp to gain today!</p>
+        <h4>Total growth</h4>
+        <p>
+          You have got 15000 xp by working on your body, pretty good progress!
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
