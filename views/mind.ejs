@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIND</title>
+    <link
+      rel="shortcut icon"
+      href="./public/images/FitmindFitbody.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./styles/sections.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">Fit Mind Fit Body</div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="#choosenStep">Daily Steps</a>
+        <a href="#mindSteps">Choose Steps</a>
+        <a href="#mindCounter">Progress</a>
+      </nav>
+    </header>
+
+    <main id="fitMind">
+      <section id="choosenStep" class="card">
+        <h3>Your Daily Steps to Take</h3>
+        <ul>
+          <li>
+            <input type="checkbox" name="Meditate20" id="Meditate20" /> Meditate
+            for 20 minutes
+          </li>
+          <li>
+            <input type="checkbox" name="Gratitude" id="Gratitude" /> Express
+            gratitude
+          </li>
+          <li>
+            <input type="checkbox" name="Meet" id="Meet" /> Meet someone new
+          </li>
+        </ul>
+        <button class="btn">Done!</button>
+      </section>
+
+      <section id="mindSteps" class="card">
+        <h3>Choose steps to take</h3>
+        <div id="stepSections">
+          <div id="came" class="section">
+            <h4>Came</h4>
+            <ul>
+              <li>
+                Meditate for 10 minutes
+                <button class="btn">Add</button>
+              </li>
+              <li>Talk to a friend <button class="btn">Add</button></li>
+              <li>Express gratitude <button class="btn">Add</button></li>
+            </ul>
+          </div>
+          <div id="saw" class="section">
+            <h4>Saw</h4>
+            <ul>
+              <li>Meditate for 20 minutes <button class="btn">Add</button></li>
+              <li>Engage in a social event <button class="btn">Add</button></li>
+              <li>Engage with a hobby <button class="btn">Add</button></li>
+            </ul>
+          </div>
+          <div id="conquered" class="section">
+            <h4>Conquered</h4>
+            <ul>
+              <li>Meditate for 30 minutes <button class="btn">Add</button></li>
+              <li>Meet someone new <button class="btn">Add</button></li>
+              <li>
+                Spend quality time with a loved one
+                <button class="btn">Add</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="mindCounter" class="card">
+        <h3>Your Progress</h3>
+        <div>
+          <h4>Today's growth</h4>
+          <p>You have gained 570 xp today!</p>
+        </div>
+        <div>
+          <h4>Total growth</h4>
+          <p>
+            You have got 8000 xp by working on your mind, pretty good progress!
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Fit Mind Fit Body. All rights reserved.</p>
+      <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+  </body>
+</html>

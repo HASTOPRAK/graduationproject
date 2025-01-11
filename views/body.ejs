@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BODY</title>
+    <link
+      rel="shortcut icon"
+      href="./public/images/FitmindFitbody.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./styles/sections.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">Fit Mind Fit Body</div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="#choosenStep">Daily Steps</a>
+        <a href="#bodySteps">Choose Steps</a>
+        <a href="#bodyCounter">Progress</a>
+      </nav>
+    </header>
+
+    <main id="fitBody">
+      <section id="choosenStep" class="card">
+        <h3>Your Daily Steps to Take</h3>
+        <ul>
+          <li>
+            <input type="checkbox" name="Walk30" id="Walk30" /> Walk for 30
+            minutes
+          </li>
+          <li>
+            <input type="checkbox" name="Run10" id="Run10" /> Run for 10 minutes
+          </li>
+          <li>
+            <input type="checkbox" name="GymU" id="GymU" /> Usual weight
+            training
+          </li>
+        </ul>
+        <button class="btn">Done!</button>
+      </section>
+
+      <section id="bodySteps" class="card">
+        <h3>Choose Steps to Take</h3>
+        <div id="stepSections">
+          <div id="came" class="section">
+            <h4>Came</h4>
+            <ul>
+              <li>Walk for 15 minutes <button class="btn">Add</button></li>
+              <li>Run for 10 minutes <button class="btn">Add</button></li>
+              <li>Light weight training <button class="btn">Add</button></li>
+            </ul>
+          </div>
+          <div id="saw" class="section">
+            <h4>Saw</h4>
+            <ul>
+              <li>Walk for 30 minutes <button class="btn">Add</button></li>
+              <li>Run for 30 minutes <button class="btn">Add</button></li>
+              <li>Usual weight training <button class="btn">Add</button></li>
+            </ul>
+          </div>
+          <div id="conquered" class="section">
+            <h4>Conquered</h4>
+            <ul>
+              <li>Walk for 60 minutes <button class="btn">Add</button></li>
+              <li>Run for 45 minutes <button class="btn">Add</button></li>
+              <li>Hard weight training <button class="btn">Add</button></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="bodyCounter" class="card">
+        <h3>Your Progress</h3>
+        <div>
+          <h4>Today's Growth</h4>
+          <p>You have 450 XP to gain today!</p>
+        </div>
+        <div>
+          <h4>Total Growth</h4>
+          <p>
+            You have gained 15,000 XP by working on your body. Pretty good
+            progress!
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Fit Mind Fit Body. All rights reserved.</p>
+      <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+  </body>
+</html>
