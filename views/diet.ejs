@@ -7,7 +7,7 @@
 
     <link
       rel="shortcut icon"
-      href="./public/images/FitmindFitbody.png"
+      href="./images/FitmindFitbody.png"
       type="image/x-icon"
     />
     <link rel="stylesheet" href="./styles/sections.css" />
@@ -26,73 +26,240 @@
     <main id="fitDiet">
       <section id="choosenStep" class="card">
         <h3>Your Daily Steps to Take</h3>
-        <ul>
-          <li>
-            <input type="checkbox" name="Snack" id="Snack" /> Eat a healthy
-            snack
-          </li>
-          <li>
-            <input type="checkbox" name="Macro" id="Macro" /> Complete your
-            macros
-          </li>
-          <li>
-            <input type="checkbox" name="ProcessedFood" id="ProcessedFood" /> Do
-            not consume any processed food
-          </li>
-        </ul>
-        <button class="btn">Done!</button>
+        <ul id="dailyList"></ul>
+        <button class="btn" id="markAllDoneButton">Mark All as Done</button>
       </section>
 
-      <section id="dietSteps" class="card">
+      <section id="dietSteps" id="chooseSteps" class="card">
         <h3>Choose steps to take</h3>
         <div id="stepSections">
           <div id="came" class="section">
             <h4>Came</h4>
-            <ul>
-              <li>
-                Drink more than 2 liters of water
-                <button class="btn">Add</button>
-              </li>
-              <li>Eat a healthy snack <button class="btn">Add</button></li>
-              <li>
-                Do not consume liquid calories <button class="btn">Add</button>
-              </li>
-            </ul>
+            <ul id="cameList"></ul>
           </div>
           <div id="saw" class="section">
             <h4>Saw</h4>
-            <ul>
-              <li>
-                Do not consume proccessed food <button class="btn">Add</button>
-              </li>
-              <li>Eat any available fruit <button class="btn">Add</button></li>
-              <li>Do not skip meal <button class="btn">Add</button></li>
-            </ul>
+            <ul id="sawList"></ul>
           </div>
           <div id="conquered" class="section">
             <h4>Conquered</h4>
-            <ul>
-              <li>Eat what you cook <button class="btn">Add</button></li>
-              <li>
-                Stick to the calorie counter <button class="btn">Add</button>
-              </li>
-              <li>Complete your macros <button class="btn">Add</button></li>
-            </ul>
+            <ul id="conqueredList"></ul>
           </div>
         </div>
       </section>
 
-      <section id="dietCounter" class="card">
-        <h3>Your Progress</h3>
+      <script>
+        document
+          .getElementById("markAllDoneButton")
+          .addEventListener("click", markAllCompleted);
+        //
+        //
+        //
+        //
+        //
+        // Fetch activities dynamically                                                            ALL ACTIVITIES
+        async function fetchActivities() {
+          const response = await fetch("/activities/diet");
+          const activities = await response.json();
+
+          const groups = { Came: [], Saw: [], Conquered: [] };
+          activities.forEach((activity) =>
+            groups[activity.tier].push(activity)
+          );
+
+          Object.entries(groups).forEach(([tier, items]) => {
+            const list = document.getElementById(tier.toLowerCase() + "List");
+            list.innerHTML = items
+              .map(
+                (item) => `
+                <li>
+                  ${item.description} <button onclick="selectActivity('${item._id}')">Add</button>
+                </li>
+              `
+              )
+              .join("");
+          });
+        }
+
+        async function selectActivity(activityId) {
+          const response = await fetch("/add-activity", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ activityId }),
+          });
+
+          if (response.ok) {
+            alert("Activity added to daily list!");
+          } else {
+            alert("Error adding activity.");
+          }
+        }
+
+        fetchActivities();
+
+        // Fetch activities dynamically                                                           DAILY ACTIVITIES
+        let selectedActivities = [];
+
+        async function fetchDailyActivities() {
+          try {
+            const response = await fetch("/daily-activities", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const activities = await response.json();
+
+            const list = document.getElementById("dailyList");
+            list.innerHTML = activities
+              .map(
+                (activity) => `
+        <li>
+          <input 
+            type="checkbox" 
+            data-activity-id="${activity.activityId._id}" 
+            ${activity.completed ? "checked disabled" : ""}
+          >
+          ${activity.description} (${activity.xp} XP)
+        </li>
+      `
+              )
+              .join("");
+            activities.forEach((activity) => {
+              console.log("Activity ID:", activity.activityId._id);
+            });
+
+            document
+              .querySelectorAll("input[type='checkbox']")
+              .forEach((checkbox) => {
+                checkbox.addEventListener("change", (event) => {
+                  const activityId =
+                    event.target.getAttribute("data-activity-id");
+                  console.log("Extracted Activity ID:", activityId._id);
+
+                  if (activityId === "[object Object]") {
+                    console.error("Invalid activityId:", activityId);
+                  }
+                  if (event.target.checked) {
+                    selectedActivities.push(activityId);
+                  } else {
+                    selectedActivities = selectedActivities.filter(
+                      (id) => id !== activityId
+                    );
+                  }
+                  console.log(
+                    "Updated Selected Activities:",
+                    selectedActivities
+                  );
+                });
+              });
+          } catch (error) {
+            console.error("Error fetching daily activities:", error);
+          }
+        }
+
+        async function markAllCompleted() {
+          console.log("Mark All Completed function triggered.");
+          if (selectedActivities.length === 0) {
+            alert("No activities selected!");
+            return;
+          }
+          console.log(
+            "Selected Activities Before Sending:",
+            selectedActivities
+          );
+
+          const activityIds = selectedActivities.map((id) => id.toString());
+          console.log("Activity IDs Sent to Backend:", activityIds);
+
+          try {
+            const response = await fetch("/complete-activity", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify({ activityIds }),
+            });
+
+            if (response.ok) {
+              alert("Activities completed!");
+              selectedActivities = [];
+              fetchDailyActivities();
+              fetchProgress();
+            } else {
+              const error = await response.json();
+              alert("Error completing activities." + error.message);
+            }
+          } catch (error) {
+            console.error("Error marking activities as done:", error);
+          }
+        }
+
+        fetchDailyActivities();
+
+        async function fetchUser() {
+          try {
+            const response = await fetch("/user", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const user = await response.json();
+            console.log("User data:", user);
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        }
+
+        fetchUser();
+
+        async function fetchProgress() {
+          try {
+            const response = await fetch("/user", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const user = await response.json();
+
+            if (!response.ok) {
+              throw new Error(user.error || "Failed to fetch progress.");
+            }
+            const dietXp = user.xpBreakdown?.diet || 0;
+            const completedXp = user.dailyActivities
+              .filter((activity) => activity.completed)
+              .reduce((sum, act) => sum + act.xp, 0);
+
+            document.getElementById(
+              "totalDietGrowth"
+            ).textContent = `${dietXp} XP`;
+            document.getElementById(
+              "totalGrowth"
+            ).textContent = `${user.totalXp} XP total`;
+          } catch (error) {
+            console.error("Error fetching progress:", error);
+            document.getElementById("totalDietGrowth").textContent =
+              "Error loading.";
+            document.getElementById("totalGrowth").textContent =
+              "Error loading total growth.";
+          }
+        }
+
+        fetchProgress();
+      </script>
+
+      <section id="counter" class="card">
+        <h3>Your Diet Improvement</h3>
         <div>
-          <h4>Today's growth</h4>
-          <p>You have 900 xp to gain today!</p>
+          <h4>Diet Growth</h4>
+          <p id="totalDietGrowth">Loading...</p>
         </div>
         <div>
-          <h4>Total growth</h4>
-          <p>
-            You have got 9750 xp by working on your diet, pretty good progress!
-          </p>
+          <h4>Total Growth</h4>
+          <p id="totalGrowth">Loading...</p>
         </div>
       </section>
     </main>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="/styles/leaderboard.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(270deg, #1e3c72, #2a5298);
+        background-size: 600% 600%;
+        animation: gradientMove 6s ease infinite;
+        color: #ffffff;
+      }
+
+      @keyframes gradientMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      header {
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-bottom: 2px solid #09c9a9;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        color: #09c9a9;
+      }
+
+      main {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        color: #ffffff;
+        text-align: center;
+      }
+
+      main p {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      table th,
+      table td {
+        padding: 15px;
+        border: 1px solid #ffffff;
+        text-align: center;
+      }
+
+      table th {
+        background-color: #09c9a9;
+        color: #000000;
+        font-size: 1.2em;
+      }
+
+      table tr {
+        background: linear-gradient(270deg, #660101, #fa2b2b);
+        background-size: 600% 600%;
+        animation: rowGradientMove 6s ease infinite;
+        transition: background-color 0.3s;
+      }
+
+      @keyframes rowGradientMove {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      table tr:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+
+      footer {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      footer a {
+        text-decoration: none;
+        color: #09c9a9;
+        font-weight: bold;
+        font-size: 1.2em;
+        transition: color 0.3s;
+      }
+
+      footer a:hover {
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Leaderboard</h1>
+    </header>
+    <main>
+      <p>
+        Here are the top performers! Improvement competition is so exciting.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Total XP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% leaderboard.forEach((user, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= user.username %></td>
+            <td><%= user.totalXp %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </main>
+    <footer>
+      <a href="/">Back to Home</a>
+    </footer>
+  </body>
+</html>

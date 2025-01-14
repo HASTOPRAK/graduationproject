@@ -1,0 +1,93 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(270deg, #1e3c72, #2a5298);
+  background-size: 600% 600%;
+  animation: gradientMove 6s ease infinite;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.form-container {
+  background-color: rgba(0, 0, 0, 0.85);
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+  width: 350px;
+  text-align: center;
+}
+
+.form-container a img {
+  width: 100px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.form-container a img:hover {
+  transform: scale(1.1);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+form input {
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #333;
+  color: #fff;
+}
+
+form input::placeholder {
+  color: #aaa;
+}
+
+form button {
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #09c9a9;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #076797;
+}
+
+form p {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+form p a {
+  color: #09c9a9;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+form p a:hover {
+  text-decoration: underline;
+}

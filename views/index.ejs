@@ -13,20 +13,31 @@
   </head>
   <body>
     <header>
-      <div class="logo">Fit Mind Fit Body</div>
+      <div class="logo">
+        <span>Fit Mind Fit Body</span>
+        <img src="/images/FitmindFitbody.png" alt="Fit Mind Fit Body Logo" />
+      </div>
       <nav>
         <a href="#welcome">Home</a>
         <a href="#fitSections">Sections</a>
-        <a href="#about">About</a>
+        <% if (user) { %>
+        <span>Welcome, <%= user.username %>!</span>
+        <a href="/logout">Logout</a>
+        <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+        <% } %>
       </nav>
     </header>
     <div id="container">
       <div id="welcome">
         <h1>Welcome</h1>
-        <p>Your commitment of days =</p>
-        <p>Your total XP =</p>
-        <button>How long you have come?</button>
-        <button>Leaderboard</button>
+        <p id="streak">Your commitment of days =</p>
+        <p id="xp">Your total XP =</p>
+        <button onclick="location.href='/progress'">
+          How long you have come?
+        </button>
+        <button onclick="location.href='/leaderboard'">Leaderboard</button>
       </div>
 
       <div id="fitSections" class="fitSections">
@@ -63,6 +74,33 @@
           </p>
         </a>
       </div>
+      <script>
+        async function fetchMainPageProgress() {
+          try {
+            const response = await fetch("/user", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const user = await response.json();
+
+            if (!response.ok) {
+              throw new Error(user.error || "Failed to fetch user data.");
+            }
+
+            document.querySelector(
+              "#streak"
+            ).textContent = `Your commitment of days: ${user.streak}`;
+            document.querySelector(
+              "#xp"
+            ).textContent = `Your total XP: ${user.totalXp}`;
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        }
+
+        fetchMainPageProgress();
+      </script>
     </div>
 
     <footer>

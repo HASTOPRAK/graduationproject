@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Progress</title>
+    <link rel="stylesheet" href="/styles/progress.css" />
+    <link
+      rel="shortcut icon"
+      href="/images/FitmindFitbody.png"
+      type="image/x-icon"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo">Fit Mind Fit Body</div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <main id="progressPage">
+      <div class="hero">
+        <h1>Your Progress</h1>
+        <p>Track your journey and see how far you've come!</p>
+      </div>
+
+      <div class="totalXp">
+        <div>
+          <h4>Total XP</h4>
+          <p><%= user.totalXp %> XP</p>
+        </div>
+        <div>
+          <h4>Day Streak</h4>
+          <p><%= user.streak %> Days</p>
+        </div>
+      </div>
+
+      <div id="progressGrid">
+        <% for (const [category, xp] of Object.entries(user.xpBreakdown)) { %>
+        <div class="progressCard">
+          <h4>
+            <%= category.charAt(0).toUpperCase() + category.slice(1) %> Progress
+          </h4>
+          <p><%= xp %> XP</p>
+        </div>
+        <% } %>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Fit Mind Fit Body. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

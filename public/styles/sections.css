@@ -1,4 +1,3 @@
-/* General styling for sections */
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
@@ -47,7 +46,6 @@ footer a:hover {
   color: #fff;
 }
 
-/* Main container styling */
 main {
   max-width: 1200px;
   margin: 100px auto;
@@ -131,24 +129,22 @@ main {
   margin: 5px 0;
 }
 
-/* Progress section */
-#bodyCounter {
+#counter {
   display: flex;
   flex-direction: column;
   gap: 10px;
   text-align: center;
 }
 
-#bodyCounter h4 {
+#counter h4 {
   font-size: 1.5em;
   margin-bottom: 5px;
 }
 
-#bodyCounter p {
+#counter p {
   font-size: 1.2em;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   main {
     padding: 10px;

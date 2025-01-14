@@ -6,7 +6,7 @@
     <title>SLEEP</title>
     <link
       rel="shortcut icon"
-      href="./public/images/FitmindFitbody.png"
+      href="./images/FitmindFitbody.png"
       type="image/x-icon"
     />
     <link rel="stylesheet" href="./styles/sections.css" />
@@ -25,79 +25,244 @@
     <main id="fitSleep">
       <section id="choosenStep" class="card">
         <h3>Your Daily Steps to Take</h3>
-        <ul>
-          <li>
-            <input type="checkbox" name="Herbal" id="Herbal" /> Drink herbal tea
-          </li>
-          <li>
-            <input type="checkbox" name="Screen60" id="Screen60" /> Avoid screen
-            time 60 minutes before bed
-          </li>
-          <li>
-            <input type="checkbox" name="Sunlight" id="Sunlight" /> Get sunlight
-            as you wake up
-          </li>
-        </ul>
-        <button class="btn">Done!</button>
+        <ul id="dailyList"></ul>
+        <button class="btn" id="markAllDoneButton">Mark All as Done</button>
       </section>
 
-      <section id="sleepSteps" class="card">
+      <section id="sleepSteps" id="chooseSteps" class="card">
         <h3>Choose steps to take</h3>
         <div id="stepSections">
           <div id="came" class="section">
             <h4>Came</h4>
-            <ul>
-              <li>
-                Avoid screen time 15 minutes before bed
-                <button class="btn">Add</button>
-              </li>
-              <li>
-                Optimize sleep environment <button class="btn">Add</button>
-              </li>
-              <li>Practice deep breathing <button class="btn">Add</button></li>
-            </ul>
+            <ul id="cameList"></ul>
           </div>
           <div id="saw" class="section">
             <h4>Saw</h4>
-            <ul>
-              <li>
-                Avoid screen time 30 minutes before bed
-                <button class="btn">Add</button>
-              </li>
-              <li>Drink herbal tea <button class="btn">Add</button></li>
-              <li>Build a bedtime routine <button class="btn">Add</button></li>
-            </ul>
+            <ul id="sawList"></ul>
           </div>
           <div id="conquered" class="section">
             <h4>Conquered</h4>
-            <ul>
-              <li>
-                Avoid screen time 60 minutes before bed
-                <button class="btn">Add</button>
-              </li>
-              <li>
-                Read until you feel sleepy <button class="btn">Add</button>
-              </li>
-              <li>
-                Get sunlight as soon as you wake up
-                <button class="btn">Add</button>
-              </li>
-            </ul>
+            <ul id="conqueredList"></ul>
           </div>
         </div>
       </section>
 
-      <section id="sleepCounter" class="card">
-        <h3>Your Progress</h3>
+      <script>
+        document
+          .getElementById("markAllDoneButton")
+          .addEventListener("click", markAllCompleted);
+        //
+        //
+        //
+        //
+        //
+        // Fetch activities dynamically
+        async function fetchActivities() {
+          const response = await fetch("/activities/sleep");
+          const activities = await response.json();
+
+          // Group activities by tier
+          const groups = { Came: [], Saw: [], Conquered: [] };
+          activities.forEach((activity) =>
+            groups[activity.tier].push(activity)
+          );
+
+          // Populate the lists
+          Object.entries(groups).forEach(([tier, items]) => {
+            const list = document.getElementById(tier.toLowerCase() + "List");
+            list.innerHTML = items
+              .map(
+                (item) => `
+                <li>
+                  ${item.description} <button onclick="selectActivity('${item._id}')">Add</button>
+                </li>
+              `
+              )
+              .join("");
+          });
+        }
+
+        async function selectActivity(activityId) {
+          const response = await fetch("/add-activity", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the user's token
+            },
+            body: JSON.stringify({ activityId }),
+          });
+
+          if (response.ok) {
+            alert("Activity added!");
+          } else {
+            alert("Error adding activity.");
+          }
+        }
+
+        fetchActivities();
+
+        // Fetch activities dynamically                                                           DAILY ACTIVITIES
+        let selectedActivities = []; // Array to track selected activity IDs
+
+        async function fetchDailyActivities() {
+          try {
+            const response = await fetch("/daily-activities", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const activities = await response.json();
+
+            const list = document.getElementById("dailyList");
+            list.innerHTML = activities
+              .map(
+                (activity) => `
+        <li>
+          <input 
+            type="checkbox" 
+            data-activity-id="${activity.activityId._id}" 
+            ${activity.completed ? "checked disabled" : ""}
+          >
+          ${activity.description} (${activity.xp} XP)
+        </li>
+      `
+              )
+              .join("");
+            activities.forEach((activity) => {
+              console.log("Activity ID:", activity.activityId._id);
+            });
+
+            // Add event listeners to checkboxes
+            document
+              .querySelectorAll("input[type='checkbox']")
+              .forEach((checkbox) => {
+                checkbox.addEventListener("change", (event) => {
+                  const activityId =
+                    event.target.getAttribute("data-activity-id");
+                  console.log("Extracted Activity ID:", activityId._id);
+
+                  if (activityId === "[object Object]") {
+                    console.error("Invalid activityId:", activityId);
+                  }
+                  if (event.target.checked) {
+                    selectedActivities.push(activityId);
+                  } else {
+                    selectedActivities = selectedActivities.filter(
+                      (id) => id !== activityId
+                    );
+                  }
+                  console.log(
+                    "Updated Selected Activities:",
+                    selectedActivities
+                  );
+                });
+              });
+          } catch (error) {
+            console.error("Error fetching daily activities:", error);
+          }
+        }
+
+        async function markAllCompleted() {
+          console.log("Mark All Completed function triggered.");
+          if (selectedActivities.length === 0) {
+            alert("No activities selected!");
+            return;
+          }
+          console.log(
+            "Selected Activities Before Sending:",
+            selectedActivities
+          );
+          // Ensure only the activity IDs (as strings) are sent
+          const activityIds = selectedActivities.map((id) => id.toString());
+          console.log("Activity IDs Sent to Backend:", activityIds);
+
+          try {
+            const response = await fetch("/complete-activity", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              body: JSON.stringify({ activityIds }),
+            });
+
+            if (response.ok) {
+              alert("Activities completed!");
+              selectedActivities = []; // Clear the selected activities
+              fetchDailyActivities(); // Refresh the list
+              fetchProgress(); // Update progress
+            } else {
+              const error = await response.json();
+              alert("Error completing activities." + error.message);
+            }
+          } catch (error) {
+            console.error("Error marking activities as done:", error);
+          }
+        }
+        fetchDailyActivities();
+
+        async function fetchUser() {
+          try {
+            const response = await fetch("/user", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const user = await response.json();
+            console.log("User data:", user);
+            // Use user data as needed
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        }
+
+        fetchUser();
+
+        async function fetchProgress() {
+          try {
+            const response = await fetch("/user", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const user = await response.json();
+
+            if (!response.ok) {
+              throw new Error(user.error || "Failed to fetch progress.");
+            }
+
+            const sleepXp = user.xpBreakdown?.sleep || 0;
+            const completedXp = user.dailyActivities
+              .filter((activity) => activity.completed)
+              .reduce((sum, act) => sum + act.xp, 0);
+
+            document.getElementById(
+              "totalSleepGrowth"
+            ).textContent = `${sleepXp} XP`;
+            document.getElementById(
+              "totalGrowth"
+            ).textContent = `${user.totalXp} XP total`;
+          } catch (error) {
+            console.error("Error fetching progress:", error);
+            document.getElementById("totalSleepGrowth").textContent =
+              "Error loading.";
+            document.getElementById("totalGrowth").textContent =
+              "Error loading total growth.";
+          }
+        }
+
+        fetchProgress();
+      </script>
+
+      <section id="counter" class="card">
+        <h3>Your Sleep Improvement</h3>
         <div>
-          <h4>Today's growth</h4>
-          <p>You have 300 xp to gain today!</p>
+          <h4>Sleep Growth</h4>
+          <p id="totalSleepGrowth">Loading...</p>
         </div>
         <div>
-          <h4>Total growth</h4>
-          <p>
-            You have got 5250 xp by working on your sleep, pretty good progress!
-          </p>
+          <h4>Total Growth</h4>
+          <p id="totalGrowth">Loading...</p>
         </div>
       </section>
     </main>
