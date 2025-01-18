@@ -110,12 +110,25 @@ app.get("/diet", authMiddleware, async (req, res) => {
 
 app.get("/progress", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const userId = req.query.userId;
+
+    // If userId is provided in the query, allow public access
+    let user;
+    if (userId) {
+      user = await User.findById(userId);
+    } else if (req.user) {
+      // If no userId but user is authenticated
+      user = await User.findById(req.user.id);
+    }
     if (!user) {
       return res.status(404).send("User not found.");
     }
 
     res.render("progress", {
+      username: user.username,
+      user: req.user,
+      userId: req.user.id,
+      request: req,
       user,
       xpBreakdown: user.xpBreakdown,
       totalXp: user.totalXp,
@@ -123,6 +136,25 @@ app.get("/progress", authMiddleware, async (req, res) => {
     });
   } catch (err) {
     res.status(500).send("Error loading progress page: " + err.message);
+  }
+});
+
+app.get("/share/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found.");
+    }
+
+    res.render("sharedProgress", {
+      username: user.username,
+      xpBreakdown: user.xpBreakdown,
+      streak: user.streak,
+      totalXp: user.totalXp,
+    });
+  } catch (err) {
+    res.status(500).send("Error fetching user progress: " + err.message);
   }
 });
 
@@ -138,13 +170,14 @@ app.post("/register", async (req, res) => {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash
     const newUser = new User({
       email,
       username,
       password: hashedPassword,
     });
     await newUser.save();
+    res.redirect("/login");
     res.status(201).send("User registered successfully!");
   } catch (err) {
     res.status(500).send("Error registering user: " + err.message);
@@ -166,8 +199,14 @@ app.post("/login", async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).send("Invalid credentials.");
+    if (!user) {
+      // Email does not exist
+      return res.status(401).send("Invalid email.");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      // Password is incorrect
+      return res.status(401).send("Invalid password.");
     }
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
@@ -185,6 +224,18 @@ app.get("/user", authMiddleware, async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
+    const now = new Date();
+    const lastActivityDate = user.activities.length
+      ? new Date(user.activities[user.activities.length - 1].date)
+      : null;
+
+    // Reset streak
+    if (!lastActivityDate || now - lastActivityDate > 24 * 60 * 60 * 1000) {
+      user.streak = 0;
+      await user.save();
+    }
+
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json({ error: "Error fetching user data: " + err.message });
@@ -244,7 +295,6 @@ app.post("/add-activity", authMiddleware, async (req, res) => {
 //POSTING ACTIVITIES
 app.post("/complete-activity", authMiddleware, async (req, res) => {
   const { activityIds } = req.body;
-  console.log("Activity IDs received by backend:", activityIds);
   if (
     !Array.isArray(activityIds) ||
     activityIds.some((id) => typeof id !== "string")
@@ -258,7 +308,6 @@ app.post("/complete-activity", authMiddleware, async (req, res) => {
 
   try {
     const user = await User.findById(req.user.id);
-    console.log("User Before Completing Activities:", user);
     if (!user) {
       return res.status(404).send("User not found.");
     }
@@ -270,7 +319,6 @@ app.post("/complete-activity", authMiddleware, async (req, res) => {
         !activity.completed
       ) {
         totalXpEarned += activity.xp;
-        console.log("Processing Activity:", activity);
 
         /// Update XP in xpBreakdown
         const activityCategory = activity.category || "unknown";
@@ -311,11 +359,6 @@ app.post("/complete-activity", authMiddleware, async (req, res) => {
     );
 
     await user.save();
-    console.log(
-      "User's updated total XP and breakdown:",
-      user.totalXp,
-      user.xpBreakdown
-    );
 
     res.status(200).json({
       message: "Activities completed.",
@@ -356,6 +399,20 @@ app.get("/leaderboard", async (req, res) => {
   }
 });
 
+app.get("/api/leaderboard", async (req, res) => {
+  try {
+    const leaderboard = await User.find()
+      .sort({ totalXp: -1 })
+      .limit(10)
+      .select("username totalXp -_id");
+    res.status(200).json(leaderboard);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Error fetching leaderboard: " + err.message });
+  }
+});
+
 app.use((req, res) => {
   res.status(404).send("<h1>404 - Page Not Found</h1>");
 });
@@ -363,3 +420,5 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
+
+export default app;

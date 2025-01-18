@@ -91,7 +91,7 @@
           });
 
           if (response.ok) {
-            alert("Activity added!");
+            window.location.reload();
           } else {
             alert("Error adding activity.");
           }
@@ -160,18 +160,12 @@
         }
 
         async function markAllCompleted() {
-          console.log("Mark All Completed function triggered.");
           if (selectedActivities.length === 0) {
             alert("No activities selected!");
             return;
           }
-          console.log(
-            "Selected Activities Before Sending:",
-            selectedActivities
-          );
 
           const activityIds = selectedActivities.map((id) => id.toString());
-          console.log("Activity IDs Sent to Backend:", activityIds);
 
           try {
             const response = await fetch("/complete-activity", {
@@ -184,10 +178,10 @@
             });
 
             if (response.ok) {
-              alert("Activities completed!");
               selectedActivities = [];
               fetchDailyActivities();
               fetchProgress();
+              window.location.reload();
             } else {
               const error = await response.json();
               alert("Error completing activities." + error.message);

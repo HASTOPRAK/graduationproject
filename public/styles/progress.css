@@ -145,6 +145,39 @@ main {
   margin: 0;
 }
 
+#shareSection {
+  text-align: center;
+  margin: 20px 0;
+}
+
+#shareButton {
+  background-color: #09c9a9;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+#shareButton:hover {
+  background-color: #027508;
+}
+
+#socialShare a {
+  display: inline-block;
+  margin: 10px;
+  text-decoration: none;
+  color: white;
+  background-color: #1da1f2; /* Example for Twitter blue */
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+#socialShare a:hover {
+  opacity: 0.8;
+}
+
 @media (max-width: 768px) {
   main {
     padding: 10px;

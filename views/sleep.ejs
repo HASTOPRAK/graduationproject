@@ -56,18 +56,16 @@
         //
         //
         //
-        // Fetch activities dynamically
+        // Fetch activities dynamically                                                            ALL ACTIVITIES
         async function fetchActivities() {
           const response = await fetch("/activities/sleep");
           const activities = await response.json();
 
-          // Group activities by tier
           const groups = { Came: [], Saw: [], Conquered: [] };
           activities.forEach((activity) =>
             groups[activity.tier].push(activity)
           );
 
-          // Populate the lists
           Object.entries(groups).forEach(([tier, items]) => {
             const list = document.getElementById(tier.toLowerCase() + "List");
             list.innerHTML = items
@@ -87,13 +85,13 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // Pass the user's token
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: JSON.stringify({ activityId }),
           });
 
           if (response.ok) {
-            alert("Activity added!");
+            window.location.reload();
           } else {
             alert("Error adding activity.");
           }
@@ -102,7 +100,7 @@
         fetchActivities();
 
         // Fetch activities dynamically                                                           DAILY ACTIVITIES
-        let selectedActivities = []; // Array to track selected activity IDs
+        let selectedActivities = [];
 
         async function fetchDailyActivities() {
           try {
@@ -132,7 +130,6 @@
               console.log("Activity ID:", activity.activityId._id);
             });
 
-            // Add event listeners to checkboxes
             document
               .querySelectorAll("input[type='checkbox']")
               .forEach((checkbox) => {
@@ -163,18 +160,12 @@
         }
 
         async function markAllCompleted() {
-          console.log("Mark All Completed function triggered.");
           if (selectedActivities.length === 0) {
             alert("No activities selected!");
             return;
           }
-          console.log(
-            "Selected Activities Before Sending:",
-            selectedActivities
-          );
-          // Ensure only the activity IDs (as strings) are sent
+
           const activityIds = selectedActivities.map((id) => id.toString());
-          console.log("Activity IDs Sent to Backend:", activityIds);
 
           try {
             const response = await fetch("/complete-activity", {
@@ -187,10 +178,10 @@
             });
 
             if (response.ok) {
-              alert("Activities completed!");
-              selectedActivities = []; // Clear the selected activities
-              fetchDailyActivities(); // Refresh the list
-              fetchProgress(); // Update progress
+              selectedActivities = [];
+              fetchDailyActivities();
+              fetchProgress();
+              window.location.reload();
             } else {
               const error = await response.json();
               alert("Error completing activities." + error.message);
@@ -210,7 +201,6 @@
             });
             const user = await response.json();
             console.log("User data:", user);
-            // Use user data as needed
           } catch (error) {
             console.error("Error fetching user data:", error);
           }

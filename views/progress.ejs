@@ -3,7 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Your Progress</title>
+    <title><%= username %>'s Progress</title>
+    <meta property="og:title" content="<%= username %>'s Fitness Progress" />
+    <meta
+      property="og:description"
+      content="Check out my fitness journey on Fit Mind Fit Body!"
+    />
+    <meta property="og:image" content="/images/FitmindFitbody.jpg" />
+    <meta
+      property="og:url"
+      content="<%= request.protocol + '://' + request.get('host') + request.originalUrl %>"
+    />
+    <meta property="og:type" content="website" />
     <link rel="stylesheet" href="/styles/progress.css" />
     <link
       rel="shortcut icon"
@@ -48,10 +59,62 @@
         </div>
         <% } %>
       </div>
+      <div id="shareSection">
+        <button id="shareButton">Share My Progress</button>
+      </div>
+
+      <div id="socialShare">
+        <a
+          href="https://www.facebook.com/sharer/sharer.php?u=<%= request.protocol + '://' + request.get('host') + '/progress?userId=' + userId %>"
+          target="_blank"
+          class="shareButton"
+        >
+          Share on Facebook
+        </a>
+        <a
+          href="https://twitter.com/intent/tweet?text=Check+out+my+progress+on+Fit+Mind+Fit+Body!&url=<%= request.protocol + '://' + request.get('host') + '/progress?userId=' + userId %>"
+          target="_blank"
+          class="shareButton"
+        >
+          Share on Twitter
+        </a>
+        <a
+          href="https://www.linkedin.com/shareArticle?mini=true&url=<%= request.protocol + '://' + request.get('host') + '/progress?userId=' + userId + request.originalUrl %>&title=My+Progress&summary=Check+out+my+progress!"
+          target="_blank"
+          class="shareButton"
+        >
+          Share on LinkedIn
+        </a>
+      </div>
     </main>
 
     <footer>
       <p>&copy; 2025 Fit Mind Fit Body. All rights reserved.</p>
     </footer>
+
+    <script>
+      document.getElementById("shareButton").addEventListener("click", () => {
+        // Get the user ID dynamically
+        const userId = "<%= userId %>";
+        const baseUrl = window.location.origin + "/progress";
+        const shareUrl = `${baseUrl}?userId=${userId}`;
+        const shareData = {
+          title: "My Progress on Fit Mind Fit Body!",
+          text: "Check out how far I've come on my fitness journey!",
+          url: shareUrl,
+        };
+
+        if (navigator.share) {
+          navigator
+            .share(shareData)
+            .then(() => console.log("Progress shared successfully"))
+            .catch((err) => console.error("Error sharing progress:", err));
+        } else {
+          alert(
+            "Sharing is not supported on your device. Please copy the link manually."
+          );
+        }
+      });
+    </script>
   </body>
 </html>
